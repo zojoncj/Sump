@@ -3,8 +3,8 @@ int flag = 0;
 int saftey = 1;
 int delayTime = 5;
 int pumpTime = 15;
-const int sumpFloat = 2;
-const int bucketFloat = 4;
+const int TopFloat = 2;
+const int BottomFloat = 4;
 const int relayPin = 8;
 const int ledPin = 13;
 
@@ -13,8 +13,8 @@ const int ledPin = 13;
 void setup() {
   // initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
-  pinMode(sumpFloat, INPUT_PULLUP);
-  pinMode(bucketFloat, INPUT_PULLUP);
+  pinMode(TopFloat, INPUT_PULLUP);
+  pinMode(BottomFloat, INPUT_PULLUP);
   pinMode(relayPin, OUTPUT);
   pinMode(ledPin, OUTPUT);
   
@@ -23,51 +23,44 @@ void setup() {
 // the loop routine runs over and over again forever:
 void loop() {
   delay(1000);
-  if(saftey == 0){
-    digitalWrite(ledPin,HIGH);
-  }
 
-    
-  int sumpVal = digitalRead(sumpFloat); //low means full (doesn't need water)
-  int bucketVal = readBucket(); //high means full (ok to pump)
   
-  if(sumpVal== LOW && bucketVal == HIGH && flag == 0){
-    flag = 1;
+  int TopVal = digitalRead(TopFloat); //low means full (doesn't need water)
+  int BottomVal = digitalRead(BottomFloat);
+
+  if(TopVal== LOW && BottomVal == LOW && flag == 0){
+       Serial.println("On");
+       flag = turnItOn(TopVal); 
+       Serial.println("OFF");
+
+  }
+  if(flag ==1){
+    for(int i=0;i < 1000;i++){
+      digitalWrite(ledPin,LOW);
+      delay(100);
+      digitalWrite(ledPin,HIGH);
+      delay(100);
       
     }
-  
-  if(flag == 1 && saftey ==1){
-    i++;
-    //Serial.println(i);
+
+    
   }
-  
-  if(saftey == 1 && i > delayTime){
-    saftey = pumpIt(pumpTime);
-    flag = 0;
-    i = 0;
-  }
-  
+
 }
 
-int pumpIt(int leng){
-  Serial.println("PUMPING");
-  int retVal=1;
-  for(int j=0;j < leng;j++){ 
-    digitalWrite(relayPin,HIGH);
-    if(readBucket() ==LOW){
-      retVal = 0;
-      digitalWrite(relayPin,LOW);
-      break;
-    }
-    Serial.println(j);  
+int turnItOn(int TopVal){
+  digitalWrite(ledPin,HIGH);
+  while(TopVal == LOW){
+    TopVal = digitalRead(TopFloat);
     delay(1000);
-   
+    Serial.println("Still On");
+    
+    
+    
   }
-  digitalWrite(relayPin,LOW);
-  return retVal;  
+  digitalWrite(ledPin,LOW);
+  return 1;
+
 }
 
-int readBucket() {
-  return  digitalRead(bucketFloat);
-}
- 
+
