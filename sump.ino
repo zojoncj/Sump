@@ -1,8 +1,5 @@
 int i = 0;
 int flag = 0;
-int saftey = 1;
-int delayTime = 5;
-int pumpTime = 15;
 const int TopFloat = 2;
 const int BottomFloat = 4;
 const int relayPin = 8;
