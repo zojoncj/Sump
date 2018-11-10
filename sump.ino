@@ -5,8 +5,6 @@ const int BottomFloat = 4;
 const int relayPin = 8;
 const int ledPin = 13;
 
-
-
 void setup() {
   // initialize serial communication at 9600 bits per second:
   Serial.begin(9600);
@@ -14,14 +12,12 @@ void setup() {
   pinMode(BottomFloat, INPUT_PULLUP);
   pinMode(relayPin, OUTPUT);
   pinMode(ledPin, OUTPUT);
-  
 }
 
 // the loop routine runs over and over again forever:
 void loop() {
   delay(1000);
 
-  
   int TopVal = digitalRead(TopFloat); //low means full (doesn't need water)
   int BottomVal = digitalRead(BottomFloat);
 
@@ -37,27 +33,20 @@ void loop() {
       delay(100);
       digitalWrite(ledPin,HIGH);
       delay(100);
-      
     }
-
-    
   }
-
 }
 
 int turnItOn(int TopVal){
   digitalWrite(ledPin,HIGH);
+  digitalWrite(relayPin,HIGH);
   while(TopVal == LOW){
     TopVal = digitalRead(TopFloat);
     delay(1000);
-    Serial.println("Still On");
-    
-    
-    
+    Serial.println("Still On");   
   }
   digitalWrite(ledPin,LOW);
+  digitalWrite(relayPin,LOW);
   return 1;
 
 }
-
-
